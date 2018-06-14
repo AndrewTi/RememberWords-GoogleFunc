@@ -67,7 +67,10 @@ exports.addWord = functions.https.onRequest((req, res) => {
         });
     }
 
-    admin.firestore().collection('/words').doc(word.toLowerCase()).set({value: JSON.stringify(data)}).then(result => {
+    console.log('test')
+
+    admin.firestore().collection('/words').doc(word.toLowerCase()).set({value: data}).then(result => {
+        console.log('gav');
         return res.json({ok: true});
     }).catch(err => {
         console.log(err);
@@ -84,12 +87,12 @@ exports.addWord = functions.https.onRequest((req, res) => {
 exports.toPDF = functions.https.onRequest((req, res) => {
     admin.firestore().collection('/words').get().then(docs => {
         let html = '<h1 style="text-align: center"> Remember Words! </h1>';
+
         docs.forEach(doc => {
             var parsed = JSON.parse(doc.data().value);
 
             if(parsed) {
-                let sentences = JSON.parse(parsed).sentences[0];
-                console.log(sentences)
+                let sentences = parsed.sentences[0];
                 html += `<div> <span>${sentences.orig}</span> <span style='float: right'>${sentences.trans}</span> </div> <hr/>`;
             }
         })
@@ -100,3 +103,18 @@ exports.toPDF = functions.https.onRequest((req, res) => {
         })
     })
 });
+
+exports.getAllWords = functions.https.onRequest((req, res) => {
+    admin.firestore().collection('/words').get().then(docs => {
+        const respArr = [];
+
+        docs.forEach(doc => {
+            var parsed = JSON.parse(doc.data().value);
+
+            if(parsed) 
+                respArr.push(parsed);
+        })
+
+        res.json(respArr);
+    })
+})
