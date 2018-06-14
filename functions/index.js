@@ -79,3 +79,11 @@ exports.addWord = functions.https.onRequest((req, res) => {
         });
     })
 })
+
+exports.toPDF = functions.https.onRequest((req, res) => {
+    pdf.create('<h1>hello world</h1>').toStream((err, stream) => {
+        if(!err)
+            stream.pipe(res);
+    })
+
+});
