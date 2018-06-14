@@ -46,3 +46,36 @@ exports.translate = functions.https.onRequest((req, res) => {
         });
     })
 })
+
+exports.addWord = functions.https.onRequest((req, res) => {
+    res.set('Content-Type', 'application/json');
+    res.set('charset', 'utf-8');
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', '*');
+    res.set('Access-Control-Allow-Headers', '*');
+
+    const { word, data } = JSON.parse(req.body);
+
+    if(!word || !data) {
+        res.status(400);
+
+        return res.json({
+            error: true,
+            code: 400,
+            message: "Bad request"
+        });
+    }
+
+    admin.firestore().collection('/words').doc(word).set({value: JSON.stringify(data)}).then(result => {
+        return res.json({ok: true});
+    }).catch(err => {
+        console.log(err);
+        res.status(500);
+
+        res.json({
+            error: true,
+            code: 500,
+            message: "something wrong"
+        });
+    })
+})
