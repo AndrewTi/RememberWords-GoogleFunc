@@ -67,7 +67,7 @@ exports.addWord = functions.https.onRequest((req, res) => {
         });
     }
 
-    admin.firestore().collection('/words').doc(word).set({value: JSON.stringify(data)}).then(result => {
+    admin.firestore().collection('/words').doc(word.toLowerCase()).set({value: JSON.stringify(data)}).then(result => {
         return res.json({ok: true});
     }).catch(err => {
         console.log(err);
@@ -82,8 +82,21 @@ exports.addWord = functions.https.onRequest((req, res) => {
 })
 
 exports.toPDF = functions.https.onRequest((req, res) => {
-    pdf.create('<h1>hello world</h1>').toStream((err, stream) => {
-        if(!err)
-            stream.pipe(res);
+    admin.firestore().collection('/words').get().then(docs => {
+        let html = '<h1 style="text-align: center"> Remember Words! </h1>';
+        docs.forEach(doc => {
+            var parsed = JSON.parse(doc.data().value);
+
+            if(parsed) {
+                let sentences = JSON.parse(parsed).sentences[0];
+                console.log(sentences)
+                html += `<div> <span>${sentences.orig}</span> <span style='float: right'>${sentences.trans}</span> </div> <hr/>`;
+            }
+        })
+
+        pdf.create(html).toStream((err, stream) => {
+            if(!err)
+                stream.pipe(res);
+        })
     })
 });
