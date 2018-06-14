@@ -1,12 +1,13 @@
+require('dotenv').config();
+
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const fetch = require('node-fetch');
 const pdf = require('html-pdf');
-const serviceAccount = require('./rm-words-firebase-adminsdk-393b8-bfae41bfe6.json');
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://rm-words.firebaseio.com"
+  credential: admin.credential.cert(require(process.env.FIREBASE_CREDENTIAL_PATH)),
+  databaseURL: process.env.FIREBASE_URL
 });
 
 exports.translate = functions.https.onRequest((req, res) => {
@@ -85,5 +86,4 @@ exports.toPDF = functions.https.onRequest((req, res) => {
         if(!err)
             stream.pipe(res);
     })
-
 });
