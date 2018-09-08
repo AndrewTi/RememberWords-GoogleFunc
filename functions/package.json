@@ -7,7 +7,8 @@
     "shell": "firebase experimental:functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "api": "apidoc -o apidoc/ -e node_modules -f 'index.js' --debug"
   },
   "dependencies": {
     "apidoc": "0.17.6",

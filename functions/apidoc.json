@@ -1,0 +1,14 @@
+{
+    "name": "RW",
+    "version": "0.1.0",
+    "description": "Documentation for RW",
+    "apidoc": {
+      "title": "Documentation"
+    },
+    "order": [
+        "Translate",
+        "AddWord",
+        "ToPDF",
+        "GetAllWords"
+      ]
+  }

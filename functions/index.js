@@ -10,6 +10,20 @@ admin.initializeApp({
   databaseURL: process.env.FIREBASE_URL
 });
 
+/** 
+ @api {post} /translate Translate word or sentese 
+ @apiVersion 0.0.1
+ @apiName Translate
+ @apiGroup Word
+
+ @apiParam {String} [targLang] Translate to 
+ @apiParam {String} [sourceLang] Translate from
+ @apiParam {String} [text] text what need to translate
+
+ @apiParamExample {json} [Reuest-example]
+    { "targLang": "uk", "sourceLang": "auto", "text": "hello" }
+    
+*/
 exports.translate = functions.https.onRequest((req, res) => {
     res.set('Content-Type', 'application/json');
     res.set('charset', 'utf-8');
@@ -48,6 +62,18 @@ exports.translate = functions.https.onRequest((req, res) => {
     })
 })
 
+/** 
+ @api {post} /addWord Add word or sentese 
+ @apiVersion 0.0.1
+ @apiName AddWord
+ @apiGroup Word
+
+ @apiParam {String} [word] Word/sentence what need to save
+ @apiParam {String} [data] The data what request to translate api are returned to you
+
+ @apiParamExample {json} [Reuest-example]
+    { "word": "Hello World", "data": "..." }
+*/
 exports.addWord = functions.https.onRequest((req, res) => {
     res.set('Content-Type', 'application/json');
     res.set('charset', 'utf-8');
@@ -84,6 +110,13 @@ exports.addWord = functions.https.onRequest((req, res) => {
     })
 })
 
+
+/** 
+ @api {get} /toPDF Download all words in PDF document
+ @apiVersion 0.0.1
+ @apiName ToPDF
+ @apiGroup Word
+*/
 exports.toPDF = functions.https.onRequest((req, res) => {
     admin.firestore().collection('/words').get().then(docs => {
         let html = '<h1 style="text-align: center"> Remember Words! </h1>';
@@ -107,6 +140,15 @@ exports.toPDF = functions.https.onRequest((req, res) => {
     })
 });
 
+/** 
+ @api {get} /getAllWords Download all words in JSON format
+ @apiVersion 0.0.1
+ @apiName GetAllWords
+ @apiGroup Word
+
+  @apiSuccessExample {json} [Response]
+                   [{"sentences":[{"trans":"досягнення","orig":"achieving","backend":3}],"dict":[{"pos":"verb","terms":["успішно виконувати","відбувати","добиватися","достигати","досягати","досягти"],"entry":[{"word":"успішно виконувати","reverse_translation":["achieve"]},{"word":"відбувати","reverse_translation":["complete","achieve","get off","finish","accomplish"]},{"word":"добиватися","reverse_translation":["achieve","obtain","attain","seek after","aim","apply for"]},{"word":"достигати","reverse_translation":["ripen","mature","mellow","reach","achieve","attain"]},{"word":"досягати","reverse_translation":["reach","achieve","attain","obtain","accomplish","amount"]},{"word":"досягти","reverse_translation":["achieve","reach","win","acquire","buy"]}],"base_form":"achieve","pos_enum":2}],"src":"en","confidence":1,"ld_result":{"srclangs":["en"],"srclangs_confidences":[1],"extended_srclangs":["en"]}}]
+*/
 exports.getAllWords = functions.https.onRequest((req, res) => {
     admin.firestore().collection('/words').get().then(docs => {
         const respArr = [];
