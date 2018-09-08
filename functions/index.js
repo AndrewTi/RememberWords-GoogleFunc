@@ -93,14 +93,17 @@ exports.toPDF = functions.https.onRequest((req, res) => {
 
             if(parsed) {
                 let sentences = parsed.sentences[0];
-                html += `<div> <span>${sentences.orig}</span> <span style='float: right'>${sentences.trans}</span> </div> <hr/>`;
+
+                html += `<div> <span>${ sentences.orig.toLowerCase() }</span> <span style='float: right'>${ sentences.trans.toLowerCase() }</span> </div> <hr/>`;
             }
         })
 
-        pdf.create(html).toStream((err, stream) => {
+        return pdf.create(html).toStream((err, stream) => {
             if(!err)
                 stream.pipe(res);
         })
+    }).catch(err => {
+        console.log(err);
     })
 });
 
@@ -115,6 +118,8 @@ exports.getAllWords = functions.https.onRequest((req, res) => {
                 respArr.push(parsed);
         })
 
-        res.json(respArr);
+        return res.json(respArr);
+    }).catch(err => {
+        console.log(err);
     })
 })

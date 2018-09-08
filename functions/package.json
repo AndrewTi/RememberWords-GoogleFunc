@@ -10,6 +10,7 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "apidoc": "0.17.6",
     "dotenv": "6.0.0",
     "firebase-admin": "5.8.2",
     "firebase-functions": "^0.8.1",
